@@ -11,25 +11,25 @@ class PostProps(BaseModel):
     checklist: bool = False 
 
 
-@app.get("/post", response_model= List[PostProps])
+@app.get("/api/post", response_model= List[PostProps])
 async def get_post():
     return db
 
 
-@app.post("/post", response_model= PostProps)
+@app.post("/api/post", response_model= PostProps)
 def create_post(item: PostProps):
     db.append(item)
 
     return item
 
-@app.get("/post/{post_id}", response_model= PostProps)
+@app.get("/api/post/{post_id}", response_model= PostProps)
 def read_post(post_id: int):
     if post_id < 0 or post_id >= len(db):
         raise HTTPException(status_code=404, detail="TODO list is not found")
     
     return db[post_id]
 
-@app.put("/post/{post_id}", response_model= PostProps)
+@app.put("/api/post/{post_id}", response_model= PostProps)
 def update_post(post_id: int, updated_item: PostProps):
     if post_id < 0 or post_id >= len(db):
         raise HTTPException(status_code=404, detail="TODO list is not found")
@@ -38,7 +38,7 @@ def update_post(post_id: int, updated_item: PostProps):
 
     return db[post_id]
 
-@app.delete("/post/{post_id}", response_model= PostProps)
+@app.delete("/api/post/{post_id}", response_model= PostProps)
 def delete_post(post_id: int):
     if post_id < 0 or post_id >= len(db):
         raise HTTPException(status_code=404, detail="TODO list is not found")
