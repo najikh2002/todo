@@ -10,3 +10,13 @@ class PostProps(BaseModel):
     desc: str = None
     checklist: bool = False 
 
+
+
+
+
+
+
+@app.post("/post", response_model=List(PostProps))
+def create_post(item):
+    db.append(item)
+    return item
