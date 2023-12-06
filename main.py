@@ -9,8 +9,8 @@ class PostProps(BaseModel):
     title: str
     desc: str = None
     checklist: bool = False 
-    
-@app.get("/post", response_model=List(TodoProps))
+
+@app.get("/post", response_model=List(PostProps))
 async def get_post():
     return db
 
