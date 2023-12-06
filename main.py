@@ -17,14 +17,14 @@ async def get_post():
 
 
 @app.post("/post", response_model= PostProps)
-def create_post(item):
+def create_post(item: PostProps):
     db.append(item)
 
     return item
 
 @app.get("/post/{post_id}", response_model= PostProps)
 def read_post(post_id: int):
-    if post_id < 0 or post_id > len(db):
+    if post_id < 0 or post_id >= len(db):
         raise HTTPException(status_code=404, detail="TODO list is not found")
     
     return db[post_id]
