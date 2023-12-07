@@ -6,7 +6,7 @@ from typing import List
 app = FastAPI()
 db = []
 
-origins = ["http://localhost:3000"]
+origins = ["https://todo-fe-omega.vercel.app"]
 
 app.add_middleware(
     CORSMiddleware,
