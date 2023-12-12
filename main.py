@@ -1,13 +1,13 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Depends
+from app.api import api
+from fastapi.security import OAuth2PasswordBearer
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import List
+import uvicorn
+import logging
 
 app = FastAPI()
-db = []
 
-origins = ["https://todo-fe-omega.vercel.app"]
-
+origins = ["http://localhost:8000"] # production web example = https://todo-fe-omega.vercel.app"
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -16,46 +16,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class PostProps(BaseModel):
-    title: str
-    desc: str = None
-    checklist: bool = False 
 
+@app.on_event("startup")
+async def startup_event():
+    print("Aplikasi dijalankan")
 
-@app.get("/api/post", response_model= List[PostProps])
-async def get_post():
-    return db
+@app.on_event("shutdown")
+async def shutdown_event():
+    print("Aplikasi dimatikan")
 
+app.include_router(api.router)
 
-@app.post("/api/post", response_model= PostProps)
-def create_post(item: PostProps):
-    db.append(item)
-
-    return item
-
-@app.get("/api/post/{post_id}", response_model= PostProps)
-def read_post(post_id: int):
-    if post_id < 0 or post_id >= len(db):
-        raise HTTPException(status_code=404, detail="TODO list is not found")
-    
-    return db[post_id]
-
-@app.put("/api/post/{post_id}", response_model= PostProps)
-def update_post(post_id: int, updated_item: PostProps):
-    if post_id < 0 or post_id >= len(db):
-        raise HTTPException(status_code=404, detail="TODO list is not found")
-    
-    db[post_id] = updated_item
-
-    return db[post_id]
-
-@app.delete("/api/post/{post_id}", response_model= PostProps)
-def delete_post(post_id: int):
-    if post_id < 0 or post_id >= len(db):
-        raise HTTPException(status_code=404, detail="TODO list is not found")
-    
-    deleted_post = db.pop(post_id)
-
-    return deleted_post
-
-
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)
